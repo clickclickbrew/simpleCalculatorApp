@@ -1,6 +1,7 @@
 package com.example.calculatortest;
 //Created during Android Java Masterclass - Become an App Developer by Tim Buchalka
-//David Smith, Feb 2022
+//Initially created Feb 2022 by David Smith
+//Last update July 16 2024
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,7 +85,9 @@ ArrayList<Button> ops; //Array of the operational buttons
         ops.forEach((n) -> n.setOnClickListener(opOCL));
         }
 
-    //Updates the editText inNum with the input from our buttons
+    //Called when a number button is pressed.
+    //Parameter is number of button pressed
+    //Updates the input display with the number.
     public void calcutron5000(int num){
         ((Button) findViewById(R.id.opClr)).setText("C");
         Log.d("VAL","num" + String.valueOf(num));
@@ -97,7 +100,9 @@ ArrayList<Button> ops; //Array of the operational buttons
             inp.setText(t + String.valueOf(num));
         }
     }
-    //Performs operations
+    //Called when operation button is pressed
+    //Parameter is name of operation button pressed
+    //Takes action related to button
     public void calcutron5000(String opin){
         Log.d("VAL", opin);
         if(opin.equals("Fin")){
@@ -106,10 +111,10 @@ ArrayList<Button> ops; //Array of the operational buttons
         if(opin.equals("Clr")){
             if(((Button) findViewById(R.id.opClr)).getText().toString().equals("C")){
                 inp.setText("");
-                if(!op.getText().toString().equals("")){ ((Button) findViewById(R.id.opClr)).setText("A"); return; }
+                ((Button) findViewById(R.id.opClr)).setText("A"); return;
             }
             else{
-                op.setText("");
+                op.setText(""); res.setText("");
                 ((Button) findViewById(R.id.opClr)).setText("C"); return;
             }
         }
@@ -127,22 +132,34 @@ ArrayList<Button> ops; //Array of the operational buttons
             op.setText("-"); return;
         }
     }
+    //What happens when equals button is pressed
     public void resolver(){
         if(op.getText().toString().equals("")){ return; }
         Log.d("VAL", "op is \"" + op.getText().toString() + "\"");
         anm = true;
-        if(res.getText().toString().equals("")){ res.setText("0"); }
+        //If one of the numbers hasn't been entered, clear the operator and return
+        if(res.getText().toString().equals("") || inp.getText().toString().equals("")){ op.setText(""); return;}
+        Double result;
+        Double numA = Double.parseDouble(res.getText().toString()); Double numB = Double.parseDouble(inp.getText().toString());
         if (op.getText().toString().equals("/")) {
-            res.setText(String.valueOf(Double.parseDouble(res.getText().toString()) / Double.parseDouble(inp.getText().toString())));
+            result = numA / numB;
         }
         else if (op.getText().toString().equals("*")) {
-            res.setText(String.valueOf(Double.parseDouble(res.getText().toString()) * Double.parseDouble(inp.getText().toString())));
+            result = numA * numB;
         }
         else if (op.getText().toString().equals("+")) {
-            res.setText(String.valueOf(Double.parseDouble(res.getText().toString()) + Double.parseDouble(inp.getText().toString())));
+            result = numA + numB;
         }
         else if (op.getText().toString().equals("-")) {
-            res.setText(String.valueOf(Double.parseDouble(res.getText().toString()) - Double.parseDouble(inp.getText().toString())));
+            result = numA - numB;
+        }
+        else{ //If an operation wasn't found, return
+            return;
+        }
+        if(result == 0 || (result%1) == 0){
+            res.setText(String.valueOf(result.intValue()));
+        }else{
+            res.setText(String.valueOf(result));
         }
         inp.setText(""); op.setText("");
     }
